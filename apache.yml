@@ -1,0 +1,17 @@
+ - name: Allow Apache traffic through firewall
+      ufw:
+        rule: allow
+        name: 'Apache Full'
+        state: enabled
+    - name: Create a simple index.html page
+      copy:
+        content: "<html><body><h1>Apache is installed and running!</h1></body></html>"
+        dest: /var/www/html/index.html
+        owner: www-data
+        group: www-data
+        mode: '0644'
+    - name: Restart Apache2 service
+      service:
+        name: apache2
+        state: restarted
+

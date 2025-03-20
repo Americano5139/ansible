@@ -1,0 +1,13 @@
+- name: install 
+  hosts: U22C
+  become: yes
+  roles: 
+    - geerlingguy.mysql
+  vars:
+    mysql_root_password: "123456"
+    mysql_users:
+      - name: "user2"
+        password: "1234567"
+        priv: "*.*:All"
+    mysql_databases:
+      - name: "data2"

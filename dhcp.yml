@@ -1,0 +1,47 @@
+- name: Install and configure DHCP server on Ubuntu
+  hosts: u22b
+  become: yes  
+  tasks:
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600  
+
+
+    - name: Install ISC DHCP server
+      apt:
+        name: isc-dhcp-server
+        state: present
+
+    - name: Configure DHCP server settings
+      copy:
+        dest: /etc/dhcp/dhcpd.conf
+        content: |
+         
+
+         
+          authoritative;
+
+          
+          subnet 192.168.20.0 netmask 255.255.255.0 {
+              range 192.168.20.100 192.168.20.200;
+              option domain-name-servers 8.8.8.8, 8.8.4.4;
+              option routers 192.168.20.254;
+              option broadcast-address 192.168.20.255;
+              default-lease-time 600;
+              max-lease-time 7200;
+          }
+
+    - name: Set DHCP server to use the correct interface
+      lineinfile:
+        path: /etc/default/isc-dhcp-server
+        regexp: '^INTERFACESv4'
+        line: 'INTERFACESv4="ens3"'
+
+
+    - name: Ensure DHCP server is running
+      service:
+        name: isc-dhcp-server
+        state: started
+        enabled: yes
